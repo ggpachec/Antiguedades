@@ -1,0 +1,124 @@
+/* ---------- Sala virtual (CSS 3D) ---------- */
+.sala { position: relative; height: calc(100vh - 110px); min-height: 520px; background: #0b1714; overflow: hidden; color: #f2ecdf; }
+.sala-vista { position: absolute; inset: 0; overflow: hidden; cursor: grab; touch-action: none; outline: none; }
+.sala-vista.mirando { cursor: grabbing; }
+.sala-mundo [hidden] { display: none !important; }
+.sala-mundo { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+.sala-mundo *, .vitrinas, .vitrina, .nodo, .caja { transform-style: preserve-3d; }
+.plano, .vitrina, .nodo, .caja, .punto-piso, .vitrinas { position: absolute; left: 0; top: 0; }
+.vitrina, .nodo, .caja, .vitrinas { width: 0; height: 0; }
+
+.piso { background:
+  linear-gradient(180deg, rgb(0 0 0 / .55), transparent 45%),
+  radial-gradient(ellipse 40% 30% at 50% 60%, rgb(255 214 150 / .16), transparent 70%),
+  repeating-linear-gradient(45deg, #6b4428 0 38px, #7a4f30 38px 76px), #6b4428;
+  background-size: var(--bs); background-position: var(--bp); background-repeat: no-repeat; }
+.techo { background: linear-gradient(0deg, #1a1612, #0e0c0a); }
+.techo[data-i="1"], .techo[data-i="3"] { border-left: 8px solid #050505; }
+.pared { background: linear-gradient(180deg, #13231f 0%, #1f3a32 38%, #193029 100%); overflow: hidden; }
+.pared::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 238px, rgb(0 0 0 / .18) 238px 240px); background-size: var(--bs); background-position: var(--bp); }
+.pared::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background: linear-gradient(180deg, #3a2618, #24170e); border-top: 6px solid #5a3d24; }
+.foco { background: radial-gradient(ellipse 46% 58% at 50% 0%, rgb(255 222 168 / .30), rgb(255 222 168 / .07) 55%, transparent 75%); pointer-events: none; }
+.rotulo-plano { pointer-events: none; }
+.rotulo { text-align: center; font: 500 64px/90px var(--serif); color: #d6bd88; letter-spacing: .06em; margin: 0; text-shadow: 0 2px 12px rgb(0 0 0 / .6); }
+.puerta { background: linear-gradient(180deg, #e8d9b8, #c2a978); border: 14px solid #3a2618; border-bottom: 0; box-shadow: inset 0 0 60px rgb(0 0 0 / .35); }
+
+/* Vitrinas */
+.mueble .plano { background: linear-gradient(180deg, #4a301c, #2c1c10); }
+.mueble .c-frente { background: linear-gradient(180deg, #5a3a22, #34210f); border: 3px solid #6e4b2c; display: grid; place-items: center; }
+.mueble .c-tapa { background: #8a6a3e; }
+.vidrio .plano { background: rgb(190 225 220 / .06); border: 2px solid rgb(214 189 136 / .7); pointer-events: none; }
+.vidrio .c-frente { background: linear-gradient(115deg, rgb(255 255 255 / .16) 0 18%, transparent 30% 70%, rgb(255 255 255 / .08) 82%); }
+.vidrio .c-tapa { background: rgb(255 236 200 / .35); border-color: rgb(214 189 136 / .9); }
+.exhibidor { display: grid; place-items: center; background: radial-gradient(ellipse at 50% 30%, #f3ead6, #d7c7a4); border-radius: 4px; }
+.pieza-vitrina { all: unset; cursor: pointer; display: grid; place-items: center; width: 100%; height: 100%; }
+.pieza-vitrina img { max-width: 84%; max-height: 84%; object-fit: contain; filter: drop-shadow(0 8px 10px rgb(0 0 0 / .45)); transition: transform .25s; }
+.pieza-vitrina:hover img, .pieza-vitrina:focus-visible img { transform: scale(1.08); }
+.pieza-vitrina:focus-visible { outline: 3px solid var(--oro); }
+.vitrina-vacia { color: #8f8063; font: italic 18px var(--serif); }
+.placa { background: linear-gradient(180deg, #e2c98e, #b8955a); color: #2a1d0e; padding: 8px 12px; border-radius: 3px; width: 82%; text-align: center; box-shadow: 0 2px 6px rgb(0 0 0 / .5); display: grid; gap: 2px; }
+.placa strong { font: 600 15px/1.15 var(--serif); } .placa span { font-size: 12px; font-weight: 700; }
+.luz-vitrina { position: absolute; left: -150px; top: -260px; width: 300px; height: 520px; background: radial-gradient(ellipse at 50% 0, rgb(255 230 180 / .14), transparent 60%); pointer-events: none; }
+.vitrina { animation: aparece .5s both; animation-delay: var(--retraso); }
+@keyframes aparece { from { opacity: 0; } }
+
+/* Puntos de navegación en el piso (estilo recorrido virtual) */
+.punto-piso { width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 0; padding: 0; background: radial-gradient(circle, rgb(255 255 255 / .9) 0 22%, rgb(255 255 255 / .25) 23% 48%, transparent 50%); cursor: pointer; transition: opacity .3s; }
+.punto-piso:hover { background: radial-gradient(circle, #fff 0 26%, rgb(214 189 136 / .55) 27% 50%, transparent 52%); }
+.punto-piso.oculto { opacity: 0; pointer-events: none; }
+
+/* Interfaz superpuesta */
+.sala-cab { position: absolute; top: 0; left: 0; right: 0; padding: 20px max(3vw, 16px); display: flex; justify-content: space-between; align-items: start; gap: 16px; background: linear-gradient(180deg, rgb(8 18 15 / .8), transparent); pointer-events: none; z-index: 2; }
+.sala-cab > * { pointer-events: auto; }
+.sala-cab h1 { color: #f6efe0; font-size: clamp(28px, 3.4vw, 42px); margin: 0 0 4px; }
+.sala-cab p { color: #c8d0c9; font-size: 14px; margin: 0; }
+.sala-cab .eyebrow { color: var(--oro); }
+.sala-barra { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2; display: flex; gap: 6px; align-items: center; background: rgb(14 38 32 / .92); border: 1px solid rgb(214 189 136 / .3); border-radius: 10px; padding: 6px; flex-wrap: wrap; justify-content: center; width: max-content; max-width: calc(100% - 24px); }
+.sala-barra button { min-height: 42px; padding: 0 16px; border: 0; border-radius: 7px; background: transparent; color: #f2ecdf; font: 600 13.5px var(--sans); cursor: pointer; }
+.sala-barra button[aria-current="true"] { background: var(--oro); color: var(--verde); }
+.sala-pag { position: absolute; right: max(3vw, 16px); bottom: 86px; z-index: 2; display: flex; gap: 8px; align-items: center; background: rgb(14 38 32 / .92); color: #f2ecdf; border-radius: 10px; padding: 6px 10px; font-size: 13px; }
+.sala-pag .btn-icono { background: transparent; color: #f2ecdf; border-color: rgb(214 189 136 / .4); }
+.sala-ayuda { position: absolute; left: max(3vw, 16px); bottom: 86px; z-index: 2; font-size: 12.5px; color: #b9c4bd; background: rgb(14 38 32 / .7); padding: 6px 10px; border-radius: 8px; }
+@media (max-width: 700px) { .sala-ayuda { display: none; } .sala-pag { bottom: 132px; } }
+
+/* Panel lateral de pieza seleccionada en la sala */
+.panel-pieza { position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: #10241f; border-left: 1px solid rgb(214 189 136 / .25); z-index: 4; display: flex; flex-direction: column; transform: translateX(100%); transition: transform .35s ease; color: #efe8da; }
+.panel-pieza.abierto { transform: none; }
+.panel-pieza .visor3d { min-height: 380px; }
+.panel-pieza-info { padding: 0 22px 22px; overflow: auto; }
+.panel-pieza-info h2 { color: #fbf5e8; font-size: 30px; margin-top: 6px; }
+.panel-pieza-info .tenue { color: #aab8b0; }
+.panel-pieza-info .precio-grande { color: var(--oro); }
+.panel-pieza .cerrar { position: absolute; top: 12px; left: 12px; z-index: 2; background: rgb(255 255 255 / .9); }
+@media (prefers-reduced-motion: reduce) { .panel-pieza { transition: none; } .vitrina { animation: none; } }
+
+/* ---------- Panel privado (administración) ---------- */
+.admin { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: calc(100vh - 30px); }
+.admin-lateral { background: var(--verde); color: #e7e0cf; padding: 26px 18px; display: flex; flex-direction: column; gap: 8px; position: sticky; top: 0; height: 100vh; overflow: auto; }
+.admin-lateral .logo { color: #f6efe0; margin-bottom: 4px; }
+.admin-lateral .eyebrow { color: var(--oro); margin-bottom: 14px; }
+.admin-lateral a { display: block; padding: 11px 14px; border-radius: 6px; background: var(--verde-2); text-decoration: none; font-size: 14px; text-align: center; }
+.admin-lateral a[aria-current="page"] { background: var(--oro); color: var(--verde); font-weight: 700; }
+.admin-lateral .pie-lateral { margin-top: auto; font-size: 12px; color: #9fb0a7; }
+.admin-cuerpo { padding: clamp(20px, 3vw, 40px); }
+.indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin: 20px 0; }
+.indicador { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 16px 18px; }
+.indicador strong { display: block; font: 500 34px var(--serif); color: var(--verde); }
+.indicador span { font-size: 13px; color: var(--tenue); }
+.tabla-env { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); overflow: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-size: 12px; font-weight: 700; letter-spacing: .02em; color: #57605a; background: var(--crema); padding: 10px 12px; white-space: nowrap; }
+td { padding: 10px 12px; border-top: 1px solid var(--linea); vertical-align: middle; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mini { flex: none; width: 44px; height: 44px; object-fit: contain; background: var(--verde); border-radius: 5px; padding: 3px; }
+.celda-pieza { display: flex; gap: 10px; align-items: center; } .celda-pieza small { display: block; color: var(--tenue); }
+.barra-herr { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.barra-herr input, .barra-herr select { width: auto; flex: 1 1 200px; }
+.fila-error td { background: #fcf1ee; } .fila-aviso td { background: #fffaf0; }
+.lista-msg { margin: 0; padding-left: 16px; font-size: 12.5px; } .lista-msg .e { color: var(--rojo); } .lista-msg .a { color: var(--ambar); }
+.zona-archivo { border: 2px dashed #cbbf9f; border-radius: var(--radio); padding: 34px 20px; text-align: center; background: var(--papel); cursor: pointer; }
+.zona-archivo.encima { border-color: var(--verde); background: var(--ok-claro); }
+.fotos-ficha { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.foto-slot { aspect-ratio: 1; border: 1px dashed #cbbf9f; border-radius: 8px; display: grid; place-items: center; text-align: center; font-size: 12.5px; color: var(--tenue); position: relative; overflow: hidden; background: #fff; cursor: pointer; }
+.foto-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--verde); }
+.foto-slot .quitar { position: absolute; top: 4px; right: 4px; z-index: 1; width: 28px; height: 28px; font-size: 13px; }
+.sugerencia { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; background: #eef3fb; border: 1px solid #cdd9ec; border-radius: 6px; padding: 4px 8px; font-size: 12.5px; color: #2c4a73; font-weight: 500; }
+.sugerencia button { border: 0; background: #fff; border-radius: 4px; padding: 2px 8px; cursor: pointer; font: 600 12px var(--sans); }
+.historial { font-size: 13px; }
+.ficha-form-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+@media (max-width: 1100px) { .ficha-form-layout { grid-template-columns: 1fr; } }
+@media (max-width: 800px) { .admin { grid-template-columns: 1fr; } .admin-lateral { position: static; height: auto; flex-direction: row; flex-wrap: wrap; } .admin-lateral .eyebrow, .admin-lateral .pie-lateral { display: none; } }
+
+/* Etiquetas (componentes A–I del cliente) */
+.hoja-etiquetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.etiqueta { background: #fff; border: 1px solid #222; border-radius: 4px; padding: 10px 12px; font: 13px/1.3 Arial, sans-serif; color: #111; display: grid; gap: 2px; min-height: 150px; }
+.etiqueta .e-pais { font-weight: 700; font-size: 15px; text-transform: uppercase; }
+.etiqueta .e-den { font-size: 14px; }
+.etiqueta .e-fila { display: flex; justify-content: space-between; gap: 8px; }
+.etiqueta .e-desc { font-size: 11.5px; font-style: italic; color: #333; }
+.etiqueta .e-precio { font-weight: 700; font-size: 17px; }
+.etiqueta .e-cod { font-size: 10.5px; color: #555; }
+@media print {
+  body * { visibility: hidden; } .hoja-etiquetas, .hoja-etiquetas * { visibility: visible; }
+  .hoja-etiquetas { position: absolute; inset: 0; grid-template-columns: repeat(3, 1fr); gap: 4mm; } .etiqueta { break-inside: avoid; }
+}
